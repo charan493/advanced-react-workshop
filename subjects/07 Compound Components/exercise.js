@@ -28,12 +28,27 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 class RadioGroup extends React.Component {
+  state = {
+    selectedIndex: 0
+  }
+
+  componentDidMount() {
+
+  }
+
   static propTypes = {
     defaultValue: PropTypes.string
   };
 
   render() {
-    return <div>{this.props.children}</div>;
+    const children = React.Children.map(this.props.children, (child, index) => {
+      return React.cloneElement(child, {
+        selectedIndex: this.state.selectedIndex,
+        whenClicked: console.log(index)
+      })
+    })
+
+    return <div>{children}</div>;
   }
 }
 
@@ -45,7 +60,7 @@ class RadioOption extends React.Component {
   render() {
     return (
       <div>
-        <RadioIcon isSelected={false} /> {this.props.children}
+        <RadioIcon isSelected={true} /> {this.props.children}
       </div>
     );
   }

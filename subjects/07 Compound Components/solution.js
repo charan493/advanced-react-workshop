@@ -69,7 +69,7 @@ class RadioGroup extends React.Component {
     const children = React.Children.map(this.props.children, child =>
       React.cloneElement(child, {
         isSelected: child.props.value === this.state.value,
-        onClick: () => this.select(child.props.value)
+        onSelect: () => this.select(child.props.value)
       })
     );
 
@@ -79,12 +79,19 @@ class RadioGroup extends React.Component {
 
 class RadioOption extends React.Component {
   static propTypes = {
-    value: PropTypes.string
+    value: PropTypes.string,
+    onSelect: PropTypes.func
+  };
+
+  handleKeyDown = event => {
+    if (event.key === 'Enter') {
+      this.props.onSelect();
+    }
   };
 
   render() {
     return (
-      <div onClick={this.props.onClick}>
+      <div tabIndex="0" onClick={this.props.onSelect} onKeyDown={this.handleKeyDown}>
         <RadioIcon isSelected={this.props.isSelected} />{" "}
         {this.props.children}
       </div>

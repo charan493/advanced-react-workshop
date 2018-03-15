@@ -4,25 +4,27 @@
 // This Modal, even though its a React component, has an imperative API to
 // open and close it. Can you convert it to a declarative API?
 ////////////////////////////////////////////////////////////////////////////////
-import "bootstrap-webpack";
 
 import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import $ from "jquery";
+import "bootstrap-webpack";
 
 class Modal extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
-    children: PropTypes.node
+    children: PropTypes.node,
+    isOpen: PropTypes.bool
   };
 
-  open() {
-    $(this.node).modal("show");
+  state = {
+    isOpen: false
   }
 
-  close() {
-    $(this.node).modal("hide");
+  componentDidUpdate() {
+    const { isOpen } = this.props;
+    
   }
 
   render() {
@@ -42,24 +44,27 @@ class Modal extends React.Component {
 }
 
 class App extends React.Component {
-  openModal = () => {
-    this.modal.open();
-  };
+  toggle = () => {
+    this.setState(previousState => {
+      this.state.previousState;
+    })
+  }
 
-  closeModal = () => {
-    this.modal.close();
-  };
+  state = {
+    isOpen: false
+  }
 
   render() {
     return (
       <div className="container">
         <h1>Let’s make bootstrap modal declarative</h1>
 
-        <button className="btn btn-primary" onClick={this.openModal}>
+        <button className="btn btn-primary" onClick={() => this.setState({ isOpen: !this.state.isOpen })}>
           open modal
         </button>
 
         <Modal
+          isOpen={true}
           title="Declarative is better"
           ref={modal => (this.modal = modal)}
         >
