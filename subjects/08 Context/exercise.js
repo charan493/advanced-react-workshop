@@ -20,23 +20,53 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 
 class Form extends React.Component {
+  state = {
+    submitted: false
+  }
+
+  static childContextTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
+    resetForm: PropTypes.func,
+  }
+
+  getChildContext() {
+    return {
+      onSubmit: () => {
+        this.setState({ submitted: true })
+      },
+      onChange: (name, e) => {
+        this.setState({ name: e.target.value })
+      }
+    }
+  }
+
   render() {
     return <div>{this.props.children}</div>;
   }
 }
 
 class SubmitButton extends React.Component {
+  static contextTypes = {
+    onSubmit: PropTypes.func,
+  }
+
   render() {
-    return <button>{this.props.children}</button>;
+    return <button onClick={this.context.onSubmit}>{this.props.children}</button>;
   }
 }
 
 class TextInput extends React.Component {
+  static contextTypes = {
+    onChange: PropTypes.func,
+  }
+
   render() {
     return (
       <input
         type="text"
         name={this.props.name}
+        onKeyDown={(e) => this.context.onChange(this.props.name, e)}
         placeholder={this.props.placeholder}
       />
     );
@@ -44,10 +74,6 @@ class TextInput extends React.Component {
 }
 
 class App extends React.Component {
-  handleSubmit = () => {
-    alert("YOU WIN!");
-  };
-
   render() {
     return (
       <div>
@@ -55,7 +81,7 @@ class App extends React.Component {
           This isn't even my final <code>&lt;Form/&gt;</code>!
         </h1>
 
-        <Form onSubmit={this.handleSubmit}>
+        <Form>
           <p>
             <TextInput name="firstName" placeholder="First Name" />{" "}
             <TextInput name="lastName" placeholder="Last Name" />

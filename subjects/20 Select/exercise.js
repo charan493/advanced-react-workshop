@@ -15,21 +15,45 @@ class Select extends React.Component {
     defaultValue: PropTypes.any
   };
 
+  static childContextTypes = {
+    onChange: PropTypes.func,
+    value: PropTypes.any,
+    defaultValue: PropTypes.any,
+  }
+
+  getChildContext() {
+    return {
+      onChange: (e) => {
+        this.setState({ value: e.target.textContent })
+      }
+    }
+  }
+
+  state = {
+    isOpen: false
+  }
+
   render() {
     return (
-      <div className="select">
+      <div className="select" onClick={() => this.setState({ isOpen: !this.state.isOpen })}>
         <div className="label">
           label <span className="arrow">▾</span>
         </div>
+        {this.state.isOpen && (
         <div className="options">{this.props.children}</div>
+        )}
       </div>
     );
   }
 }
 
 class Option extends React.Component {
+  static contextTypes = {
+    onChange: PropTypes.func,
+  }
+
   render() {
-    return <div className="option">{this.props.children}</div>;
+    return <div className="option" onClick={(e) => this.context.onChange(e)}>{this.props.children}</div>;
   }
 }
 
